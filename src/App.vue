@@ -1,14 +1,35 @@
 <template>
   <div id="app">
     <b-img src="./assets/logo.png" class="logoFincons" fluid alt="Fincons Group"></b-img>
+    <LoginComp v-if="show=='loginPanel'"
+      @register = "register()"
+    />
+    <RegisterComp v-else />
   </div>
 </template>
 
 <script>
 
+import LoginComp from "./components/Login.vue"
+import RegisterComp from "./components/Register.vue"
+
 export default {
   name: 'App',
-  components: {}
+  components: {
+    LoginComp,
+    RegisterComp
+  },
+  data() {
+    return{
+      show: 'loginPanel'
+    }
+  },
+  methods: {
+    register: function() {
+      alert("Regist User!");
+      this.show = 'registerPanel';
+    }
+  }
 }
 </script>
 

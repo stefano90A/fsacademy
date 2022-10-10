@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <b-img src="./assets/logo.png" class="logoFincons" fluid alt="Fincons Group"></b-img>
-    <h1>Benvenuti al corso Vue, Accademy 2022!!</h1>
+    <h1>Benvenuti al corso Vue, Academy 2022!!</h1>
     <h2>Studente: {{fullname}}</h2>
     <h6 v-show="precedente" style="color:red">Creato da {{precedente}}</h6>
     <p>

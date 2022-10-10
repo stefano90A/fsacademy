@@ -1,4 +1,4 @@
-# fsaccademy
+# fsacademy
 
 ## Project setup
 ```

@@ -39,6 +39,9 @@ export default {
                 if( res.data.success ) {
                     alert( "Login avvenuta con successo" );
                     this.$session.set("bearer", res.data.data);
+                    this.$emit("login",{
+                        userId: "1"
+                    });
                 }
             });
         },

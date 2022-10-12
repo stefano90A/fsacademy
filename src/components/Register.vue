@@ -1,6 +1,6 @@
 <template>
     <b-container id="registerContainer" class="w-50">
-        <b-form @submit="onSubmit" @reset="onReset">
+        <b-form @submit.prevent="onSubmit">
             <b-row class="justify-content-md-center">
                 <b-col>
                     <b-form-group id="input-group-1" label="Name:" label-for="input-1" class="labelForm">
@@ -57,7 +57,7 @@
 </template>
 
 <script>
-
+import axios from "axios";
 export default {
     name: 'RegisterComponent',
     components: {},
@@ -75,11 +75,6 @@ export default {
                 "description": null,
                 "name": "NAVETTA",
                 "value": 0.7
-            },{
-            "id": 3,
-            "description": null,
-            "name": "BONUS",
-            "value": 10.0
             }],
             locations: [{
                 "id": 1,
@@ -134,13 +129,9 @@ export default {
             memberTypes: [
                 {
                     id: 1,
-                    description: 'Consulente esterno',
+                    description: null,
                     name: 'TERZE PARTI'
-                },{
-                    id: 2,
-                    description: 'Dipendente interno',
-                    name: 'DIPENDENTE'
-                },
+                }
             ],
             employee: {
                 name: null,
@@ -171,13 +162,15 @@ export default {
     methods: {
         onSubmit: function() {
             alert("form submitted! " + this.email + " - " + this.password);
-        },
-        onReset: function() {
-            this.email = null;
-            this.password = null;
-        },
-        onRegister: function() {
-            this.$emit("register");
+            axios.post("https://ftmbe.herokuapp.com/public/register",this.employee).then((res) => {
+                if( res.data.success ) {
+                    alert( "Registrazione avvenuta con successo" );
+                    this.$session.set("bearer", res.data.data);
+                    this.$emit("registered",{
+                        userId: "1"
+                    });
+                }
+            });
         }
     },
     beforeCreate() { 

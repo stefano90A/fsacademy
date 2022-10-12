@@ -1,99 +1,76 @@
 <template>
     <div>
-        <div v-if="employee.name">
-            <p>Benvenuto {{employee.name}}</p>
+        <b-navbar toggleable="lg" type="dark" variant="dark">
+            <b-navbar-brand href="#" @click="logout">Logout</b-navbar-brand>
+
+            <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+
+            <b-collapse id="nav-collapse" is-nav>
+            <b-navbar-nav>
+                <b-nav-item href="#">Link</b-nav-item>
+                <b-nav-item href="#" disabled>Disabled</b-nav-item>
+            </b-navbar-nav>
+
+            <!-- Right aligned nav items -->
+            <b-navbar-nav class="ml-auto">
+                <b-nav-form>
+                <b-form-input size="sm" class="mr-sm-2" placeholder="Search"></b-form-input>
+                <b-button size="sm" class="my-2 my-sm-0" type="submit">Search</b-button>
+                </b-nav-form>
+
+                <b-nav-item-dropdown text="Lang" right>
+                <b-dropdown-item href="#">EN</b-dropdown-item>
+                <b-dropdown-item href="#">ES</b-dropdown-item>
+                <b-dropdown-item href="#">RU</b-dropdown-item>
+                <b-dropdown-item href="#">FA</b-dropdown-item>
+                </b-nav-item-dropdown>
+
+                <b-nav-item-dropdown right>
+                <!-- Using 'button-content' slot -->
+                <template #button-content>
+                    <em>User</em>
+                </template>
+                <b-dropdown-item href="#">Profile</b-dropdown-item>
+                <b-dropdown-item href="#">Sign Out</b-dropdown-item>
+                </b-nav-item-dropdown>
+            </b-navbar-nav>
+            </b-collapse>
+        </b-navbar>
+
+        <div>
+            <b-card
+            no-body
+            style="max-width: 100%;"
+            v-if="employee.name"
+            >
+
+                <template #header>
+                <h4 class="mb-0">Utente: {{employee.name}} {{employee.surname}}</h4>
+                </template>
+
+                <b-card-body align="left">
+                <b-card-title>Nome: {{employee.name}}</b-card-title>
+                <b-card-sub-title class="mb-2">Cognome: {{employee.surname}}</b-card-sub-title>
+                <b-container class="bv-example-row">
+                    <b-row class="mb-3">
+                    <b-col class="fontBold">Email: </b-col>
+                    <b-col>{{employee.email}}</b-col>
+                    <b-col class="fontBold">Sede Appartenenza: </b-col>
+                    <b-col>{{employee.location.name}}</b-col>
+                    </b-row>
+                    <b-row class="mb-3">
+                    <b-col class="fontBold">Tipo Contratto: </b-col>
+                    <b-col>{{employee.member.name}}</b-col>
+                    <b-col class="fontBold">Trattamento: </b-col>
+                    <b-col>{{employee.refund.name}}</b-col>
+                    </b-row>
+                </b-container>
+                
+                </b-card-body>
+            </b-card>
         </div>
-        <!--b-card
-        no-body
-        style="max-width: 100%;"
-        v-if="item"
-      >
-
-        <template #header>
-          <h4 class="mb-0">WBS: {{item.value}}</h4>
-        </template>
-
-        <b-card-body align="left">
-          <b-card-title>{{item.text}}</b-card-title>
-          <b-card-sub-title class="mb-2">{{item.stateDesc}}</b-card-sub-title>
-          <b-container class="bv-example-row">
-            <b-row class="mb-3">
-              <b-col class="fontBold">Identificativo DB: {{ item.id }}</b-col>
-              <b-col class="fontBold">Identificativo router: {{ wbsId }}</b-col>
-            </b-row>
-            <b-row class="mb-3">
-              <b-col class="fontBold">Tipo WBS: </b-col>
-              <b-col>{{item.type}}</b-col>
-              <b-col class="fontBold">Inizio validità: </b-col>
-              <b-col>{{item.startDate}}</b-col>
-              <b-col class="fontBold">Fine validità: </b-col>
-              <b-col>{{item.endDate}}</b-col>
-              <b-col class="fontBold">Disattiva: </b-col>
-              <b-col>{{item.disabled}}</b-col>
-            </b-row>
-          </b-container>
-
-          <b-list-group flush>
-            <b-list-group-item>
-              <p>ADV Recap</p>
-
-              <b-table 
-                striped 
-                hover 
-                :items="item.costi"
-                :fields="this.fields" 
-                selectMode="multi"
-                responsive="sm" 
-                selectable
-                @row-selected="selectYear"
-              >
-                <template #cell(anno)="data">
-                    <template>
-                      <p :class="{ fontBold: data.value==new Date().getFullYear() }">{{ data.value }}</p>
-                    </template>
-                </template>
-
-                <template #cell()="data">
-                    <template>
-                        {{ data.value }} €
-                    </template>                
-                </template>
-
-                <template #cell(percent)="data">
-                    <template>
-                        {{ (data.item.margine / data.item.ricavi) * 100 }} %
-                    </template>                
-                </template>
-
-              </b-table>
-              
-              <p>
-                  Selected Rows:<br>
-                  {{ selected }}                
-              </p>
-
-            </b-list-group-item>
-          </b-list-group>
-
-          <b-list-group flush>
-            <b-list-group-item>
-              <div v-if="projects">
-                <ProjDet v-for="project in projects" :key="project.id" v-bind:item="project" provenienza="dettaglioWbs"/>
-              </div>
-            </b-list-group-item> 
-          </b-list-group>
-          
-        </b-card-body>
-      </b-card>
-      
-      <div>Lista Progetti, con ricavi entrate e spese x ogni uno</div>
-      <div>Cliccando sul progetto è possibile vedere ogni risorsa che ha collaborato e in quale misura</div>
-
-      <router-link v-if="provenienza=='link'" to="/gestionewbs"><b-button>Gestione WBS (prov. link)</b-button></router-link>
-      <b-button v-else @click="closeDetails()" size="sm" class="pb-2 m-2">Gestione WBS (prov. component)</b-button-->
-
-
-
+    
+    
 
     </div>
 </template>
@@ -104,7 +81,7 @@ import axios from "axios";
 export default {
     name: "HomePage",
     props: {
-        userId: Number,
+        userId: String,
     },
     components: {},
     data() {
@@ -135,20 +112,26 @@ export default {
         }
     },
     methods: {
-        getUser( userId ) {
-            axios.get("https://ftmbe.herokuapp.com/user/" + userId).then((res) => {
+        getUser(userId) {
+            axios.get("https://ftmbe.herokuapp.com/user/"+userId,{
+                headers: {
+                    Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzZWxmIiwic3ViIjoicHJvdmE1QGZpbmNvbnNncm91cC5jb20iLCJleHAiOjQyNjE3MjAwNDUsImlhdCI6MTY2NTMwNzcwMCwic2NvcGUiOiJVU0VSIn0.-ep5shyy8tXH-wqDDgqgWdOOl-edEYGroB89nSTWeb4'
+                }
+            }).then((res) => {
                 if( res.data.success ) {
                     this.$session.set("user", res.data.data);
                     this.employee=res.data.data
                 }
             });
+        },
+        logout() {
+            this.$emit("logout");
         }
     },
     beforeCreate() { },
     created() {
-        console.log("WbsDetails - Created")
         if (this.userId && this.$session.get("bearer") ) {
-            this.getWbs(this.wbsId);
+            this.getUser(this.userId);
         }
     },
     beforeMount() {},
@@ -164,5 +147,8 @@ export default {
 .fontBold {
     font-weight: 800;
     color: brown;
+}
+.bg-dark {
+    background-color: brown!important;
 }
 </style>

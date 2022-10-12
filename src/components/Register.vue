@@ -40,7 +40,7 @@
                 </b-col>
                 <b-col>
                     <label class="mr-sm-2 labelForm" for="inline-form-custom-select-pref">Seleziona Benefit:</label>
-                    <b-form-select id="inline-form-custom-select-pref" v-model="employee.refunds">
+                    <b-form-select id="inline-form-custom-select-pref" v-model="employee.refund">
                         <option v-for="refund in refunds" v-bind:key="refund.id" v-bind:value="refund">{{refund.name}} ({{refund.value}} €/gg)</option>
                     </b-form-select>
                 </b-col>

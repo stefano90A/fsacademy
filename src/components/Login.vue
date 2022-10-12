@@ -1,6 +1,6 @@
 <template>
     <div id="loginContainer">
-        <b-form @submit="onSubmit" @reset="onReset">
+        <b-form @submit.prevent="onSubmit" @reset="onReset">
             <b-container class="bv-example-row w-50">
                 <b-row class="justify-content-md-center">
                     <b-col class="p-4"><b-form-input v-model="email" placeholder="Enter your email"></b-form-input></b-col>
@@ -18,6 +18,7 @@
 </template>
 
 <script>
+import axios from "axios";
 
 export default {
     name: 'LoginComponent',
@@ -31,6 +32,15 @@ export default {
     methods: {
         onSubmit: function() {
             alert("form submitted! " + this.email + " - " + this.password);
+            axios.post("https://ftmbe.herokuapp.com/public/login",{
+                email: this.email,
+                password: this.password
+            }).then((res) => {
+                if( res.data.success ) {
+                    alert( "Login avvenuta con successo" );
+                    this.$session.set("bearer", res.data.data);
+                }
+            });
         },
         onReset: function() {
             this.email = null;

@@ -23,7 +23,7 @@ export default {
   data() {
     return {
       show: 'loginPanel',
-      userId: "1"
+      userId: null
     }
   },
   methods: {
@@ -38,13 +38,15 @@ export default {
       this.show = 'loginPanel';
       this.$session.remove("bearer");
       this.$session.remove("user");
-      //this.userId = undefined;
+      this.$session.remove("userId");
+      this.userId = null;
     }
   },
   beforeMount() {
-    if( this.$session.exists("bearer") )
+    if( this.$session.exists("bearer") && this.$session.exists("userId") ) {
       this.show = 'homePanel';
-
+      this.userId = this.$session.get("userId");
+    }
   }
 }
 </script>

@@ -45,7 +45,7 @@
             >
 
                 <template #header>
-                <h4 class="mb-0">Utente: {{employee.name}} {{employee.surname}}</h4>
+                    <h4 class="mb-0">Utente: {{employee.name}} {{employee.surname}}</h4>
                 </template>
 
                 <b-card-body align="left">
@@ -115,7 +115,7 @@ export default {
         getUser(userId) {
             axios.get("https://ftmbe.herokuapp.com/user/"+userId,{
                 headers: {
-                    Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzZWxmIiwic3ViIjoicHJvdmE1QGZpbmNvbnNncm91cC5jb20iLCJleHAiOjQyNjE3MjAwNDUsImlhdCI6MTY2NTMwNzcwMCwic2NvcGUiOiJVU0VSIn0.-ep5shyy8tXH-wqDDgqgWdOOl-edEYGroB89nSTWeb4'
+                    Authorization: 'Bearer ' + this.$session.get("bearer")
                 }
             }).then((res) => {
                 if( res.data.success ) {
@@ -130,7 +130,7 @@ export default {
     },
     beforeCreate() { },
     created() {
-        if (this.userId && this.$session.get("bearer") ) {
+        if (this.userId && this.$session.exists("bearer") ) {
             this.getUser(this.userId);
         }
     },

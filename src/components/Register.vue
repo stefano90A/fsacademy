@@ -161,13 +161,13 @@ export default {
     },
     methods: {
         onSubmit: function() {
-            alert("form submitted! " + this.email + " - " + this.password);
             axios.post("https://ftmbe.herokuapp.com/public/register",this.employee).then((res) => {
                 if( res.data.success ) {
                     alert( "Registrazione avvenuta con successo" );
-                    this.$session.set("bearer", res.data.data);
+                    this.$session.set("bearer", res.data.data.token);
+                    this.$session.set("userId", res.data.data.id.toString());
                     this.$emit("registered",{
-                        userId: "1"
+                        userId: res.data.data.id.toString()
                     });
                 }
             });

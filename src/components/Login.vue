@@ -9,7 +9,6 @@
                     <b-col class="p-4"><b-form-input v-model="password" placeholder="Type your password" type="password"></b-form-input></b-col>
                 </b-row>
             </b-container>
-            <h1 v-if="false">aa</h1>
             <b-button type="submit"   class="m-1" variant="primary">Submit</b-button>
             <b-button type="reset"    class="m-1" variant="danger">Reset</b-button>
             <b-button @click="onRegister" class="m-1" variant="secondary">Register now!</b-button>

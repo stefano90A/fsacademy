@@ -28,19 +28,19 @@
             <b-row>
                 <b-col>
                     <label class="mr-sm-2 h-50 labelForm" for="inline-form-custom-select-pref" >Seleziona tipologia contratto:</label>
-                    <b-form-select id="inline-form-custom-select-pref" v-model="employee.member">
+                    <b-form-select id="inline-form-custom-select-member" v-model="employee.member">
                         <option v-for="memberType in memberTypes" v-bind:key="memberType.id" v-bind:value="memberType">{{memberType.name}}</option>
                     </b-form-select>
                 </b-col>
                 <b-col>
                     <label class="mr-sm-2 h-50 labelForm" for="inline-form-custom-select-pref">Seleziona Sede Assunzione:</label>
-                    <b-form-select id="inline-form-custom-select-pref" v-model="employee.location">
+                    <b-form-select id="inline-form-custom-select-location" v-model="employee.location">
                         <option v-for="location in locations" v-bind:key="location.id" v-bind:value="location">{{location.name}}</option>
                     </b-form-select>
                 </b-col>
                 <b-col>
                     <label class="mr-sm-2 h-50 labelForm" for="inline-form-custom-select-pref">Seleziona Benefit:</label>
-                    <b-form-select id="inline-form-custom-select-pref" v-model="employee.refunds">
+                    <b-form-select id="inline-form-custom-select-refund" v-model="employee.refund">
                         <option v-for="refund in refunds" v-bind:key="refund.id" v-bind:value="refund">{{refund.name}} ({{refund.value}} €/gg)</option>
                     </b-form-select>
                 </b-col>
@@ -184,6 +184,9 @@ export default {
     },
     mounted() {
         console.log("RegisterComponent - Mount")
+        this.employee.member = this.memberTypes[0]
+        this.employee.refund = this.refunds[0]
+        this.employee.location = this.locations[0]
     },
     beforeUpdate() { 
         console.log("RegisterComponent - before Update") 

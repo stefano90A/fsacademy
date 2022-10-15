@@ -1,11 +1,11 @@
 <template>
     <div>
         <b-navbar toggleable="lg" type="dark" variant="dark">
-            <b-navbar-brand href="#">Home</b-navbar-brand>
+            <b-navbar-brand href="#" @click="show=null">Home</b-navbar-brand>
             
             <b-navbar-nav>
-                <b-nav-item href="#">Link</b-nav-item>
-                <b-nav-item href="#" disabled>Disabled</b-nav-item>
+                <b-nav-item href="#" @click="show='showUserManager'">Utenti</b-nav-item>
+                <!--b-nav-item href="#" disabled>Disabled</b-nav-item-->
             </b-navbar-nav>
 
             <!-- Right aligned nav items -->
@@ -15,7 +15,7 @@
                 <template #button-content>
                     <em>{{employee.name}} {{employee.surname}}</em>
                 </template>
-                <!--b-dropdown-item href="#">Profile</b-dropdown-item-->
+                <b-dropdown-item href="#" @click="show='showProfile'">Profile</b-dropdown-item>
                 <b-dropdown-item href="#" @click="logout">Sign Out</b-dropdown-item>
                 </b-nav-item-dropdown>
             </b-navbar-nav>
@@ -26,7 +26,7 @@
             <b-card
                 no-body
                 style="max-width: 80%;"
-                v-if="employee.name"
+                v-if="employee.name && show=='showProfile'"
                 class="m-auto"
             >
                 <template #header>
@@ -55,20 +55,26 @@
             </b-card>
         </div>
 
+        <UserManager v-if="show=='showUserManager'"/>
+
     </div>
 </template>
   
 <script>
 import axios from "axios";
+import UserManager from "./UserManager.vue"
 
 export default {
     name: "HomePage",
     props: {
         userId: String,
     },
-    components: {},
+    components: {
+        UserManager
+    },
     data() {
         return {
+            show: null,
             employee: {
                 name: null,
                 surname: null,

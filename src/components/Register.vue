@@ -1,6 +1,6 @@
 <template>
     <b-container id="registerContainer" class="w-50">
-        <b-form ref="formReg" @submit.prevent="onSubmit">
+        <b-form @submit.prevent="onSubmit">
             <b-row class="justify-content-md-center">
                 <b-col>
                     <b-form-group id="input-group-1" label="Name:" label-for="input-1" class="labelForm">
@@ -40,8 +40,7 @@
                 </b-col>
                 <b-col>
                     <label class="mr-sm-2 h-50 labelForm" for="inline-form-custom-select-pref">Seleziona Benefit:</label>
-                    <b-form-select id="inline-form-custom-select-refund" ref="refund" v-model="employee.refund">
-                        <option disabled value="">Please Select</option>
+                    <b-form-select id="inline-form-custom-select-refund" v-model="employee.refund">
                         <option v-for="refund in refunds" v-bind:key="refund.id" v-bind:value="refund">{{refund.name}} ({{refund.value}} €/gg)</option>
                     </b-form-select>                    
                 </b-col>

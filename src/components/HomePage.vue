@@ -1,11 +1,8 @@
 <template>
     <div>
         <b-navbar toggleable="lg" type="dark" variant="dark">
-            <b-navbar-brand href="#" @click="logout">Logout</b-navbar-brand>
-
-            <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-
-            <b-collapse id="nav-collapse" is-nav>
+            <b-navbar-brand href="#">Home</b-navbar-brand>
+            
             <b-navbar-nav>
                 <b-nav-item href="#">Link</b-nav-item>
                 <b-nav-item href="#" disabled>Disabled</b-nav-item>
@@ -13,37 +10,25 @@
 
             <!-- Right aligned nav items -->
             <b-navbar-nav class="ml-auto">
-                <b-nav-form>
-                <b-form-input size="sm" class="mr-sm-2" placeholder="Search"></b-form-input>
-                <b-button size="sm" class="my-2 my-sm-0" type="submit">Search</b-button>
-                </b-nav-form>
-
-                <b-nav-item-dropdown text="Lang" right>
-                <b-dropdown-item href="#">EN</b-dropdown-item>
-                <b-dropdown-item href="#">ES</b-dropdown-item>
-                <b-dropdown-item href="#">RU</b-dropdown-item>
-                <b-dropdown-item href="#">FA</b-dropdown-item>
-                </b-nav-item-dropdown>
-
                 <b-nav-item-dropdown right>
                 <!-- Using 'button-content' slot -->
                 <template #button-content>
-                    <em>User</em>
+                    <em>{{employee.name}} {{employee.surname}}</em>
                 </template>
-                <b-dropdown-item href="#">Profile</b-dropdown-item>
-                <b-dropdown-item href="#">Sign Out</b-dropdown-item>
+                <!--b-dropdown-item href="#">Profile</b-dropdown-item-->
+                <b-dropdown-item href="#" @click="logout">Sign Out</b-dropdown-item>
                 </b-nav-item-dropdown>
             </b-navbar-nav>
-            </b-collapse>
+            
         </b-navbar>
 
         <div>
             <b-card
-            no-body
-            style="max-width: 100%;"
-            v-if="employee.name"
+                no-body
+                style="max-width: 80%;"
+                v-if="employee.name"
+                class="m-auto"
             >
-
                 <template #header>
                     <h4 class="mb-0">Utente: {{employee.name}} {{employee.surname}}</h4>
                 </template>
@@ -69,8 +54,6 @@
                 </b-card-body>
             </b-card>
         </div>
-    
-    
 
     </div>
 </template>
@@ -112,8 +95,8 @@ export default {
         }
     },
     methods: {
-        getUser(userId) {
-            axios.get("https://ftmbe.herokuapp.com/user/"+userId,{
+        getUser() {
+            axios.get("https://ftmbe.herokuapp.com/user/"+this.userId,{
                 headers: {
                     Authorization: 'Bearer ' + this.$session.get("bearer")
                 }
@@ -122,6 +105,9 @@ export default {
                     this.$session.set("user", res.data.data);
                     this.employee=res.data.data
                 }
+            }).catch(function (error) {
+                console.log(error);
+                this.logout();    
             });
         },
         logout() {
@@ -131,7 +117,9 @@ export default {
     beforeCreate() { },
     created() {
         if (this.userId && this.$session.exists("bearer") ) {
-            this.getUser(this.userId);
+            this.getUser();
+        } else {
+            this.logout();
         }
     },
     beforeMount() {},

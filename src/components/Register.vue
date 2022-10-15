@@ -27,19 +27,19 @@
             </b-row>
             <b-row>
                 <b-col>
-                    <label class="mr-sm-2 labelForm" for="inline-form-custom-select-pref" >Seleziona tipologia contratto:</label>
+                    <label class="mr-sm-2 h-50 labelForm" for="inline-form-custom-select-pref" >Seleziona tipologia contratto:</label>
                     <b-form-select id="inline-form-custom-select-pref" v-model="employee.member">
                         <option v-for="memberType in memberTypes" v-bind:key="memberType.id" v-bind:value="memberType">{{memberType.name}}</option>
                     </b-form-select>
                 </b-col>
                 <b-col>
-                    <label class="mr-sm-2 labelForm" for="inline-form-custom-select-pref">Seleziona Sede Assunzione:</label>
+                    <label class="mr-sm-2 h-50 labelForm" for="inline-form-custom-select-pref">Seleziona Sede Assunzione:</label>
                     <b-form-select id="inline-form-custom-select-pref" v-model="employee.location">
                         <option v-for="location in locations" v-bind:key="location.id" v-bind:value="location">{{location.name}}</option>
                     </b-form-select>
                 </b-col>
                 <b-col>
-                    <label class="mr-sm-2 labelForm" for="inline-form-custom-select-pref">Seleziona Benefit:</label>
+                    <label class="mr-sm-2 h-50 labelForm" for="inline-form-custom-select-pref">Seleziona Benefit:</label>
                     <b-form-select id="inline-form-custom-select-pref" v-model="employee.refund">
                         <option v-for="refund in refunds" v-bind:key="refund.id" v-bind:value="refund">{{refund.name}} ({{refund.value}} €/gg)</option>
                     </b-form-select>
@@ -63,76 +63,9 @@ export default {
     components: {},
     data() {
         return{
-            refunds: [
-            {
-                "id": 1,
-                "description": null,
-                "name": "MEZZA DIARIA",
-                "value": 15.0
-            },
-            {
-                "id": 2,
-                "description": null,
-                "name": "NAVETTA",
-                "value": 0.7
-            }],
-            locations: [{
-                "id": 1,
-                "description": null,
-                "name": "VIMERCATE"
-            },
-            {
-                "id": 2,
-                "description": null,
-                "name": "VERONA"
-            },
-            {
-                "id": 3,
-                "description": null,
-                "name": "ROMA"
-            },
-            {
-                "id": 4,
-                "description": null,
-                "name": "BARI"
-            },
-            {
-                "id": 5,
-                "description": null,
-                "name": "BISCEGLIE"
-            },
-            {
-                "id": 6,
-                "description": null,
-                "name": "CATANIA"
-            },
-            {
-                "id": 7,
-                "description": null,
-                "name": "LECCE"
-            },
-            {
-                "id": 8,
-                "description": null,
-                "name": "NAPOLI"
-            },
-            {
-                "id": 9,
-                "description": null,
-                "name": "TRENTO"
-            },
-            {
-                "id": 10,
-                "description": null,
-                "name": "RENDE"
-            }],
-            memberTypes: [
-                {
-                    id: 1,
-                    description: null,
-                    name: 'TERZE PARTI'
-                }
-            ],
+            refunds: [],
+            locations: [],
+            memberTypes: [],
             employee: {
                 name: null,
                 surname: null,
@@ -171,6 +104,27 @@ export default {
                     });
                 }
             });
+        },
+        getMemberTypes: function() {
+            axios.get("https://ftmbe.herokuapp.com/public/memberType").then((res) => {
+                if( res.data.success ) {
+                    this.memberTypes = res.data.data 
+                }
+            });
+        },
+        getlocations: function() {
+            axios.get("https://ftmbe.herokuapp.com/public/location").then((res) => {
+                if( res.data.success ) {
+                    this.locations = res.data.data 
+                }
+            });
+        },
+        getRefunds: function() {
+            axios.get("https://ftmbe.herokuapp.com/public/refund").then((res) => {
+                if( res.data.success ) {
+                    this.refunds = res.data.data 
+                }
+            });
         }
     },
     beforeCreate() { 
@@ -181,6 +135,9 @@ export default {
     },
     beforeMount() {
         console.log("RegisterComponent - before Mount")
+        this.getMemberTypes();
+        this.getlocations();
+        this.getRefunds();
     },
     mounted() {
         console.log("RegisterComponent - Mount")

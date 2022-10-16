@@ -4,68 +4,84 @@
             <b-row class="justify-content-md-center">
                 <b-col>
                     <b-form-group id="input-group-1" label="Name:" label-for="input-1" class="labelForm">
-                        <b-form-input id="input-1" v-model="employee.name" type="text" placeholder="Enter your name" required></b-form-input>
+                        <b-form-input id="input-1" :disabled="viewMode == 'read'" v-model="employee.name" type="text" placeholder="Enter your name" required></b-form-input>
                     </b-form-group>           
                 </b-col>
                 <b-col>
                     <b-form-group id="input-group-2" label="Surname:" label-for="input-2" class="labelForm">
-                        <b-form-input id="input-2" v-model="employee.surname" type="text" placeholder="Enter your surname" required></b-form-input>
+                        <b-form-input id="input-2" :disabled="viewMode == 'read'" v-model="employee.surname" type="text" placeholder="Enter your surname" required></b-form-input>
                     </b-form-group>
                 </b-col>
             </b-row>
             <b-row>
                 <b-col>
                     <b-form-group id="input-group-3" label="Email address:" label-for="input-3" class="labelForm">
-                        <b-form-input id="input-3" v-model="employee.email" type="email" placeholder="Enter email" required></b-form-input>
+                        <b-form-input id="input-3" :disabled="viewMode == 'read'" v-model="employee.email" type="email" placeholder="Enter email" required></b-form-input>
                     </b-form-group>
                 </b-col>
                 <b-col>
                     <b-form-group id="input-group-4" label="Password:" label-for="input-4" class="labelForm">
-                        <b-form-input id="input-4" v-model="employee.password" type="password" placeholder="Type Password" required></b-form-input>
+                        <b-form-input id="input-4" :disabled="viewMode == 'read'" v-model="employee.password" type="password" placeholder="Type Password" required></b-form-input>
                     </b-form-group>
                 </b-col>
             </b-row>
             <b-row>
                 <b-col>
                     <label class="mr-sm-2 h-50 labelForm" for="inline-form-custom-select-pref" >Seleziona tipologia contratto:</label>
-                    <b-form-select id="inline-form-custom-select-member" v-model="employee.member">
+                    <b-form-select id="inline-form-custom-select-member" :disabled="viewMode == 'read'" v-model="employee.member">
                         <option v-for="memberType in memberTypes" v-bind:key="memberType.id" v-bind:value="memberType">{{memberType.name}}</option>
                     </b-form-select>
                 </b-col>
                 <b-col>
                     <label class="mr-sm-2 h-50 labelForm" for="inline-form-custom-select-pref">Seleziona Sede Assunzione:</label>
-                    <b-form-select id="inline-form-custom-select-location" v-model="employee.location">
+                    <b-form-select id="inline-form-custom-select-location" :disabled="viewMode == 'read'" v-model="employee.location">
                         <option v-for="location in locations" v-bind:key="location.id" v-bind:value="location">{{location.name}}</option>
                     </b-form-select>
                 </b-col>
                 <b-col>
                     <label class="mr-sm-2 h-50 labelForm" for="inline-form-custom-select-pref">Seleziona Benefit:</label>
-                    <b-form-select id="inline-form-custom-select-refund" v-model="employee.refund">
+                    <b-form-select id="inline-form-custom-select-refund" :disabled="viewMode == 'read'" v-model="employee.refund">
                         <option v-for="refund in refunds" v-bind:key="refund.id" v-bind:value="refund">{{refund.name}} ({{refund.value}} €/gg)</option>
                     </b-form-select>                    
                 </b-col>
             </b-row>
             <b-row>
                 <b-col class="p-4">
-                    <b-button type="submit"   class="m-1" variant="primary">Submit</b-button>
-                    <b-button type="reset"    class="m-1" variant="danger">Reset</b-button>
+                    <b-button type="submit" v-if="viewMode=='write' || viewMode=='insert'" class="m-1" variant="primary">Submit</b-button>
+                    <b-button @click="returnBack()" class="m-1" variant="secondary">Indietro</b-button>
                 </b-col>
             </b-row>
             
         </b-form>
     </b-container>
 </template>
-
+  
 <script>
 import axios from "axios";
+
 export default {
-    name: 'RegisterComponent',
+    name: "UserComponent",
+    props: {
+        employeeProps: Object,
+        viewMode: String
+    },
     components: {},
+    watch: {
+        refunds() {
+            if( this.viewMode == 'insert' ) 
+                this.employee.refund = this.refunds[0]
+        },
+        memberTypes() {
+            if( this.viewMode == 'insert' ) 
+                this.employee.member = this.memberTypes[0]
+        },
+        locations() {
+            if( this.viewMode == 'insert' ) 
+                this.employee.location = this.locations[0]
+        }
+    },
     data() {
-        return{
-            refunds: [],
-            locations: [],
-            memberTypes: [],
+        return {
             employee: {
                 name: null,
                 surname: null,
@@ -89,19 +105,42 @@ export default {
                 },
                 role: []
             },
-            password: null
+            refunds: [],
+            locations: [],
+            memberTypes: [],
         }
     },
     methods: {
+        returnBack() {
+            this.$emit("return");
+        },
         onSubmit: function() {
-            axios.post("https://ftmbe.herokuapp.com/public/register",this.employee).then((res) => {
+            if( this.viewMode == "write" )
+                this.updateUser()
+            if( this.viewMode == "insert" )
+                this.insertUser()
+        },
+        insertUser: function() {
+            axios.post("https://ftmbe.herokuapp.com/user/",this.employee,{
+                headers: {
+                    Authorization: 'Bearer ' + this.$session.get("bearer")
+                }
+            }).then((res) => {
                 if( res.data.success ) {
-                    alert( "Registrazione avvenuta con successo" );
-                    this.$session.set("bearer", res.data.data.token);
-                    this.$session.set("userId", res.data.data.id.toString());
-                    this.$emit("registered",{
-                        userId: res.data.data.id.toString()
-                    });
+                    alert( "Inserimento avvenuta con successo" );
+                    this.$emit("inserted");
+                }
+            });
+        },
+        updateUser: function() {
+            axios.put("https://ftmbe.herokuapp.com/user/",this.employee,{
+                headers: {
+                    Authorization: 'Bearer ' + this.$session.get("bearer")
+                }
+            }).then((res) => {
+                if( res.data.success ) {
+                    alert( "Aggiornamento avvenuta con successo" );
+                    this.$emit("updated");
                 }
             });
         },
@@ -109,7 +148,6 @@ export default {
             axios.get("https://ftmbe.herokuapp.com/public/memberType").then((res) => {
                 if( res.data.success ) {
                     this.memberTypes = res.data.data 
-                    this.employee.member = res.data.data[0] 
                 }
             });
         },
@@ -117,7 +155,6 @@ export default {
             axios.get("https://ftmbe.herokuapp.com/public/location").then((res) => {
                 if( res.data.success ) {
                     this.locations = res.data.data 
-                    this.employee.location = res.data.data[0] 
                 }
             });
         },
@@ -125,27 +162,37 @@ export default {
             axios.get("https://ftmbe.herokuapp.com/public/refund").then((res) => {
                 if( res.data.success ) {
                     this.refunds = res.data.data 
-                    this.employee.refund = res.data.data[0] 
                 }
             });
         }
     },
+    beforeCreate() { },
+    created() {
+        if( this.viewMode != "insert" ) {
+            this.employee = this.employeeProps
+            this.employee.password = "123456"
+        }        
+    },
     beforeMount() {
-        console.log("RegisterComponent - before Mount");
         this.getMemberTypes();
         this.getlocations();
         this.getRefunds();
-        
-    }
+    },
+    mounted() {},
+    beforeUpdate() {},
+    updated() {},
+    beforeDestroy() {},
+    destroyed() {}
 }
 </script>
 
-<style>
-    #registerContainer {
-        margin: auto;
-    }
-    .labelForm {
-        color: brown;
-        font-weight: 700;
-    }
+<style scoped>
+.icon {
+    height: 20px;
+}
+
+#functionCont {
+    float: left;
+}
+
 </style>

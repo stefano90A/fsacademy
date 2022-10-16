@@ -55,7 +55,7 @@
             </b-card>
         </div>
 
-        <UserManager v-if="show=='showUserManager'"/>
+        <UserManager v-if="show=='showUserManager'" @logout="logout()"/>
 
     </div>
 </template>

@@ -5,6 +5,7 @@
             
             <b-navbar-nav>
                 <b-nav-item href="#" @click="show='showUserManager'">Utenti</b-nav-item>
+                <b-nav-item href="#" @click="show='showRouterTest'">Router Test</b-nav-item>
                 <!--b-nav-item href="#" disabled>Disabled</b-nav-item-->
             </b-navbar-nav>
 
@@ -55,6 +56,8 @@
             </b-card>
         </div>
 
+        <RouterTest v-if="show=='showRouterTest'"></RouterTest>
+
         <UserManager v-if="show=='showUserManager'" @logout="logout()"/>
 
     </div>
@@ -63,6 +66,7 @@
 <script>
 import axios from "axios";
 import UserManager from "./UserManager.vue"
+import RouterTest from "./RouterTesting.vue"
 
 export default {
     name: "HomePage",
@@ -70,7 +74,8 @@ export default {
         userId: String,
     },
     components: {
-        UserManager
+        UserManager,
+        RouterTest
     },
     data() {
         return {

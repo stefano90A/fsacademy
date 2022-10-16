@@ -2,14 +2,18 @@
     <div>
         <div v-if="show=='listUsers'">
             <div class="m-auto w-75" style="text-align: left;">
+                <b-button pill class="m-1" variant="outline-primary" @click="getListUsers()">Aggiorna</b-button>
                 <b-button pill class="m-1" variant="outline-primary" @click="show = 'insertUser'">Aggiungi</b-button>
+                <b-button pill class="m-1" variant="outline-primary" @click="deleteSelected()">Elimina</b-button>
+                <b-button pill class="m-1" variant="outline-primary" @click="selectAll()">Sel. Tutti</b-button>
+                <b-button pill class="m-1" variant="outline-primary" @click="deselectAll()">Desel. Tutti</b-button>
             </div>
             <div style="clear: both"></div>
             <div style="max-height: 500pt; overflow-y:auto">
                 <b-table
                     :fields="this.fields" 
                     :items="this.employees"
-                    selectMode="single"
+                    selectMode="multi"
                     ref="selectableTable"
                     responsive="sm" 
                     class="m-auto w-75"
@@ -48,8 +52,6 @@
                     </template>
                 </b-table>
             </div>
-            
-            Selected: {{selected}}
         </div>
         <div v-if="show=='updateUser'">
             <UserComp :employeeProps="employee" viewMode="write" @return="returnBack()" @updated="getListUsers(); returnBack();"></UserComp>
@@ -142,6 +144,22 @@ export default {
         returnBack() {
             this.show = "listUsers"
             this.employee = null;
+        },
+        deleteSelected() {
+            if( this.selected.length == 0 ) {
+                alert("Selezionare almeno un record")
+                return
+            }
+            this.selected.forEach((value) => {
+                this.deleteUser(value.id)
+            });
+            this.getListUsers();
+        },
+        selectAll() {
+            this.$refs.selectableTable.selectAllRows()
+        },
+        deselectAll() {
+            this.$refs.selectableTable.clearSelected()
         }
     },
     beforeCreate() { },
@@ -161,7 +179,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 .icon {
     height: 20px;
 }
@@ -178,6 +196,16 @@ export default {
 .btn-outline-primary{
     color:brown;
     border-color: brown;
+}
+
+.table-active {
+    background-color: brown !important;
+    color: white !important;
+}
+
+.table-active:hover, .table.b-table.table-hover > tbody > tr.table-active:hover td, .table.b-table.table-hover > tbody > tr.table-active:hover th {
+    background-color: chocolate !important;
+    color: white !important;
 }
 
 </style>

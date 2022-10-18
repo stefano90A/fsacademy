@@ -170,7 +170,7 @@ export default {
     },
     methods: {
         onSubmit: function() {
-            alert("Registered! " + this.email + " - " + this.password);
+            alert("Registered! " + this.employee.email + " - " + this.employee.password);
         }
     },
     beforeCreate() { 

@@ -1,6 +1,6 @@
 <template>
     <b-container id="registerContainer" class="w-50">
-        <b-form @submit="onSubmit">
+        <b-form @submit.prevent="onSubmit">
             <b-row class="justify-content-md-center">
                 <b-col>
                     <b-form-group id="input-group-1" label="Name:" label-for="input-1" class="labelForm">
@@ -57,92 +57,16 @@
 </template>
 
 <script>
+import axios from "axios"
 
 export default {
     name: 'RegisterComponent',
     components: {},
     data() {
         return{
-            refunds: [
-                {
-                    "id": 1,
-                    "description": null,
-                    "name": "MEZZA DIARIA",
-                    "value": 15.0
-                },
-                {
-                    "id": 2,
-                    "description": null,
-                    "name": "NAVETTA",
-                    "value": 0.7
-                },{
-                    "id": 3,
-                    "description": null,
-                    "name": "BONUS",
-                    "value": 10.0
-                }
-            ],
-            locations: [{
-                "id": 1,
-                "description": null,
-                "name": "VIMERCATE"
-            },
-            {
-                "id": 2,
-                "description": null,
-                "name": "VERONA"
-            },
-            {
-                "id": 3,
-                "description": null,
-                "name": "ROMA"
-            },
-            {
-                "id": 4,
-                "description": null,
-                "name": "BARI"
-            },
-            {
-                "id": 5,
-                "description": null,
-                "name": "BISCEGLIE"
-            },
-            {
-                "id": 6,
-                "description": null,
-                "name": "CATANIA"
-            },
-            {
-                "id": 7,
-                "description": null,
-                "name": "LECCE"
-            },
-            {
-                "id": 8,
-                "description": null,
-                "name": "NAPOLI"
-            },
-            {
-                "id": 9,
-                "description": null,
-                "name": "TRENTO"
-            },
-            {
-                "id": 10,
-                "description": null,
-                "name": "RENDE"
-            }],
-            memberTypes: [
-                {
-                    id: 1,
-                    description: null,
-                    name: 'TERZE PARTI'
-                },{
-                    id: 2,
-                    description: null,
-                    name: 'DIPENDENTE'
-                },
-            ],
+            refunds: [],
+            locations: [],
+            memberTypes: [],
             employee: {
                 name: null,
                 surname: null,
@@ -171,6 +95,35 @@ export default {
     methods: {
         onSubmit: function() {
             alert("Registered! " + this.employee.email + " - " + this.employee.password);
+            axios.post("https://ftmbe.herokuapp.com/public/register", this.employee).then( (res) => {
+                if( res.data.success ) {
+                    alert("registrazione avvenuta con successo");
+                    this.$session.set( "bearer", res.data.data.token )
+                    this.$session.set( "userId", res.data.data.id )
+                    this.$emit( "registered", {
+                        userId: res.data.data.id.toString()
+                    })
+                }
+            })
+        },
+        getSelectDomainValue: function() {
+            axios.get("https://ftmbe.herokuapp.com/public/memberType").then( (res) => {
+                if( res.data.success ) {
+                    this.memberTypes = res.data.data
+                }
+            })
+
+            axios.get("https://ftmbe.herokuapp.com/public/location").then( (res) => {
+                if( res.data.success ) {
+                    this.locations = res.data.data
+                }
+            })
+
+            axios.get("https://ftmbe.herokuapp.com/public/refund").then( (res) => {
+                if( res.data.success ) {
+                    this.refunds = res.data.data
+                }
+            })
         }
     },
     beforeCreate() { 
@@ -181,15 +134,19 @@ export default {
     },
     beforeMount() {
         console.log("RegisterComponent - before Mount")
+        this.getSelectDomainValue()
     },
     mounted() {
         console.log("RegisterComponent - Mount")
+        /*this.employee.member = this.memberTypes[0]
+        this.employee.refund = this.refunds[0]
+        this.employee.location = this.locations[0]*/
+    },
+    beforeUpdate() { 
+        console.log("RegisterComponent - before Update");
         this.employee.member = this.memberTypes[0]
         this.employee.refund = this.refunds[0]
         this.employee.location = this.locations[0]
-    },
-    beforeUpdate() { 
-        console.log("RegisterComponent - before Update") 
     },
     updated() { 
         console.log("RegisterComponent - Updated") 

@@ -20,6 +20,23 @@
         <input v-model="numero" placeholder="Inserisci numero" :class="[{ activeCustom: isActive == 'data' }, redTextClass]" />
         <p :style="styleObject">Link: {{numero}}</p>
 
+        
+        
+          <transition name="fade" mode="out-in">
+            <div key=1 class="h-50 d-inline-block p-4" v-if="showPanel" @click="showPanel = !showPanel" style="background-color: red">
+              Hello
+            </div>
+            <div key=2 class="h-50 d-inline-block p-4" v-else @click="showPanel = !showPanel" style="background-color: blue">
+              Bye
+            </div>
+          </transition>
+
+          <Transition name="bounce">
+            <p v-if="showPanel" style="text-align: center;">
+              Hello here is some bouncy text!
+            </p>
+          </Transition>
+        
         <router-view></router-view>
     </div>    
 </template>
@@ -30,6 +47,7 @@
     props: {},
     data(){
       return {
+        showPanel: false,
         isActive: 'home',
         color: 'coral',
         redTextClass: 'redText', 
@@ -60,5 +78,29 @@
       font-size: xx-large;
     }
 
+    .fade-enter-active, .fade-leave-active { 
+      transition: opacity .5s ease;
+    }
+    .fade-enter-from, .fade-leave-to {
+      opacity: 0;
+    }
+    
+    .bounce-enter-active {
+      animation: bounce-in 0.5s;
+    }
+    .bounce-leave-active {
+      animation: bounce-in 0.5s reverse;
+    }
+    @keyframes bounce-in {
+      0% {
+        transform: scale(0);
+      }
+      50% {
+        transform: scale(1.25);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
   </style>
   

@@ -2,13 +2,23 @@
     <div>
         hello {{$session.get("user").name + ' ' + $session.get("user").surname}}
         <nav>
-            <b-button pill class="m-1" variant="outline-primary"><router-link to="/">Home</router-link></b-button>
-            <b-button pill class="m-1" variant="outline-primary"><router-link to="/about">Una vista...</router-link></b-button>
-            <b-button pill class="m-1" variant="outline-primary" v-if="this.numero" ><RouterLink :to="{name:'data', params: { id: this.numero }}">Rotta con parametro</RouterLink></b-button>
+            <b-button pill class="m-1" 
+              :class="{ activeCustom: isActive == 'home' }" 
+              @click="isActive = 'home'"
+              variant="outline-primary"><router-link to="/">Home</router-link></b-button>
+            <b-button pill class="m-1" 
+              :class="{ activeCustom: isActive == 'about' }" 
+              @click="isActive = 'about'"
+              variant="outline-primary">
+              <router-link to="/about">Una vista...</router-link></b-button>
+            <b-button pill class="m-1" 
+              :class="{ activeCustom: isActive == 'data' }" 
+              @click="isActive = 'data'"
+              variant="outline-primary" v-if="this.numero" ><RouterLink :to="{name:'data', params: { id: this.numero }}">Rotta con parametro</RouterLink></b-button>
         </nav>
 
-        <input v-model="numero" placeholder="Inserisci numero"/>
-        <p>Link: {{numero}}</p>
+        <input v-model="numero" placeholder="Inserisci numero" :class="[{ activeCustom: isActive == 'data' }, redTextClass]" />
+        <p :style="styleObject">Link: {{numero}}</p>
 
         <router-view></router-view>
     </div>    
@@ -20,7 +30,15 @@
     props: {},
     data(){
       return {
-        numero: null
+        isActive: 'home',
+        color: 'coral',
+        redTextClass: 'redText', 
+        numero: null,
+        styleObject: {
+          color: 'orange',
+          fontSize: '28px',
+          fontWeight: '600'
+        }
       }
     }
   }
@@ -28,6 +46,19 @@
   
   <!-- Add "scoped" attribute to limit CSS to this component only -->
   <style scoped>
-  
+    .activeCustom {
+      background-color: v-bind(color);
+      font-weight: 600;
+    }
+
+    button a {
+      text-decoration: none;
+    }
+
+    .redText {
+      color: red;
+      font-size: xx-large;
+    }
+
   </style>
   

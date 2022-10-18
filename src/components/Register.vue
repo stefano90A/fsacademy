@@ -92,6 +92,17 @@ export default {
             },
         }
     },
+    watch: {
+        refunds: function() {
+            this.employee.refund = this.refunds[0]
+        },
+        locations: function() {
+            this.employee.location = this.locations[0]
+        },
+        memberTypes: function() {
+            this.employee.member = this.memberTypes[0]
+        }
+    },
     methods: {
         onSubmit: function() {
             alert("Registered! " + this.employee.email + " - " + this.employee.password);
@@ -143,10 +154,7 @@ export default {
         this.employee.location = this.locations[0]*/
     },
     beforeUpdate() { 
-        console.log("RegisterComponent - before Update");
-        this.employee.member = this.memberTypes[0]
-        this.employee.refund = this.refunds[0]
-        this.employee.location = this.locations[0]
+        console.log("RegisterComponent - before Update");     
     },
     updated() { 
         console.log("RegisterComponent - Updated") 

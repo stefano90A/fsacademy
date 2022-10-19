@@ -4,7 +4,6 @@
             <b-card
                 no-body
                 style="max-width: 80%;"
-                v-if="employee.name"
                 class="m-auto"
             >
                 <template #header>

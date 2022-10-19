@@ -21,7 +21,7 @@
             </b-navbar-nav>
             
         </b-navbar>
-
+        
         <UserCard v-if="show=='userProfile'" :employee="employee" />
 
         <UserManager v-if="show=='userManager'" ></UserManager>
@@ -46,29 +46,7 @@ export default {
     data() {
         return {
             show: null,
-            employee: {
-                name: null,
-                surname: null,
-                email: null,
-                password: null,
-                member: {
-                    id: null,
-                    description: null,
-                    name: null
-                },
-                location: {
-                    id: null,
-                    description: null,
-                    name: null
-                },
-                refund: {
-                    id: null,
-                    description: null,
-                    name: null,
-                    value: null
-                },
-                role: []
-            }
+            employee: {}
         }
     },
     methods: {
